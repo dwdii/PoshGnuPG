@@ -49,6 +49,8 @@ function GpgEncrypt-File
 
         [string] $ForUser,
 
+        [string] $OutputFile,
+
         [string] $GpgPath = "C:\Program Files (x86)\GnuPG\bin\gpg.exe",
 
         [string] $GpgLog = "~/gpg.log",
@@ -56,18 +58,36 @@ function GpgEncrypt-File
         [string] $GpgErr = "~/gpgErr.log"
     )
 
+    if($OutputFile.Length -eq 0)
+    {
+        $OutputFile = ($FilePath + ".gpg")
+    }
+
     
     # Build the argument list
-    $args = @(
-                "-e", "-v", "-r",# "-y",
-                $ForUser,
-                $FilePath
-    )
+    $args = New-Object System.Collections.ArrayList
+    $args.Add("-e") | Out-Null
+    $args.Add("-v") | Out-Null
+    $args.Add("-r") | Out-Null
+    $args.Add($ForUser) | Out-Null
+
+    # if an output file was specified, then pass it along
+    if($OutputFile.Length -gt 0)
+    {
+        $args.Add("-o") | Out-Null
+        $args.Add($OutputFile) | Out-Null
+    }
+
+    $args.Add($FilePath) | Out-Null
 
     # Show the argument list we are using
     #Write-Verbose $args.ToString()
 
+    # Encrypt the file
     $log = Invoke-GpgExe -GpgPath $GpgPath -GpgLog $GpgLog -GpgErr $GpgErr -ArgumentList $args
+
+    # Get the file object
+    $encFile = Get-Item -Path $OutputFile
 
     return ($encFile, $log)
 }
