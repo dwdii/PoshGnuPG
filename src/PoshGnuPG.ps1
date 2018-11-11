@@ -9,7 +9,7 @@
 
         [string] $GpgErr = "~/gpgErr.log",
 
-        [object[]] $ArgumentList
+        [object[]] $ArgumentList = @("-h")
     )
 
     if(Test-Path $GpgLog)
