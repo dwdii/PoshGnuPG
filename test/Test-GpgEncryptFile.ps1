@@ -10,7 +10,11 @@ $encfile, $log = GpgEncrypt-File -FilePath "D:\Code\PowerShell\PoshGnuPG\test-da
 #Write-Host $log
                 
 
-$encfile, $log = GpgEncrypt-File -FilePath "D:\Code\PowerShell\PoshGnuPG\test-data\monalisa-test.jpg" -ForUser "daniel@dittenhafer.net" -Verbose -OutputFile "D:\Code\PowerShell\PoshGnuPG\test-data\monalisa-test.jpg.enctest"
+$destFile = "D:\Code\PowerShell\PoshGnuPG\test-data\monalisa-test.jpg.enctest"
+$encfile, $log = GpgEncrypt-File -FilePath "D:\Code\PowerShell\PoshGnuPG\test-data\monalisa-test.jpg" -ForUser "daniel@dittenhafer.net" -Verbose -OutputFile $destFile
 
 $encfile | Out-String | Write-Host 
 $log | Out-String | Write-Host 
+
+
+GpgDecrypt-File -FilePath $destFile
