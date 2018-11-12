@@ -8,14 +8,14 @@ This module was developed and tested using Gpg4Win v3.1.4 and GnuGP v2.2.10
 
 ## Usage
 
-```posh
+```powershell
 GpgEncrypt-File -FilePath "filepath\to\file.ext" -ForUser "user@email.com"
 ```
 
-```{posh}
+```powershell
 GpgDecrypt-File -FilePath "filepath\to\file.ext.gpg"
 ```
 
-```{posh}
+```powershell
 Invoke-GpgExe -ArgumentList @("-h")
 ```
