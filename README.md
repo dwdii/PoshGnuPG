@@ -16,6 +16,12 @@ GpgEncrypt-File -FilePath "filepath\to\file.ext" -ForUser "user@email.com"
 GpgDecrypt-File -FilePath "filepath\to\file.ext.gpg"
 ```
 
+### Invoke-GpgExe
+
+`Invoke-GpgExe` is simply a PowerShell wrapper around the `gpg.exe`. 
+
+* ArgumentList: The arguments to pass to the `gpg.exe`.
+
 ```powershell
 Invoke-GpgExe -ArgumentList @("-h")
 ```
