@@ -8,7 +8,7 @@ This module was developed and tested using Gpg4Win v3.1.4 and GnuGP v2.2.10
 
 ## Usage
 
-```{posh}
+```posh
 GpgEncrypt-File -FilePath "filepath\to\file.ext" -ForUser "user@email.com"
 ```
 
