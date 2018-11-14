@@ -27,15 +27,18 @@
     $ArgumentList | Out-String | Write-Verbose 
 
     # Fire up gpg.exe
-    Start-Process -FilePath  $GpgPath -ArgumentList $ArgumentList -Wait -NoNewWindow -RedirectStandardOutput $GpgLog -RedirectStandardError $GpgErr
+    $proc = Start-Process -FilePath  $GpgPath -ArgumentList $ArgumentList -Wait -NoNewWindow -RedirectStandardOutput $GpgLog -RedirectStandardError $GpgErr -PassThru
+
+    # Show result code
+    ("{0} exit code: {1}" -F $GpgPath, $proc.ExitCode) | Out-String | Write-Verbose
 
     # Load log and err log
     $log = Get-Content $GpgLog 
     $err = Get-Content $GpgErr 
-    #if ($err.Length -gt 0)
-    #{
-    #    throw $err
-    #}
+    if ($proc.ExitCode -gt 0)
+    {
+        throw $log
+    }
 
     return ($log + $err)
 }
@@ -87,9 +90,64 @@ function GpgEncrypt-File
     $log = Invoke-GpgExe -GpgPath $GpgPath -GpgLog $GpgLog -GpgErr $GpgErr -ArgumentList $args
 
     # Get the file object
-    $encFile = Get-Item -Path $OutputFile
+    #$encFile = Get-Item -Path $OutputFile
 
-    return ($encFile, $log)
+    return $log
+}
+
+function GpgEncrypt-Folder
+{
+    [CmdletBinding()]
+    param
+    (
+        [string] $Path,
+
+        [string] $Filter,
+
+        [string] $ForUser,
+
+        [string] $OutputPath,
+
+        [string] $DonePath,
+
+        [string] $LogPath = (".\PohGnuPG-{0}.log") -f (Get-Date -Format "yyyyMMdd")
+    )
+
+    # check if exists and if not, then create the output path.
+    if(-not (Test-Path -Path $OutputPath -PathType Container))
+    {
+        New-Item -Path $OutputPath -ItemType Container
+    }
+
+    $files = Get-ChildItem  -Path $Path -Filter $filter
+    $outputFiles = New-Object System.Collections.ArrayList
+
+    foreach ($file in $files) 
+    {
+        Add-Content -Path $LogPath -Value ("{0},{1}" -F (Get-Date -Format "yyyyMMdd HH:mm:ss"), $file)
+
+        $FullPath = Join-Path -Path $Path -ChildPath $file
+        $OutputFile = Join-Path -Path $OutputPath -ChildPath ($file.Name + ".gpg")
+    
+        # Encrypt the input file
+        $result = GpgEncrypt-File -FilePath $FullPath -ForUser $ForUser -OutputFile $OutputFile
+
+        # Log
+        foreach($s in $result)
+        {
+            Add-Content -Path $LogPath -Value ("{0},{1}" -F (Get-Date -Format "yyyyMMdd HH:mm:ss"), $s)
+        }
+        
+        # If the output file got created successfully, move the input file to the done folder.
+        if(Test-Path -Path $OutputFile -PathType Leaf )
+        {
+            Move-Item -Path $FullPath -Destination $DonePath
+            $outputFiles.Add($OutputFile) | Out-Null
+        }
+
+    }
+
+    return $outputFiles
 }
 
 
