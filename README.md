@@ -8,6 +8,18 @@ This module was developed and tested using Gpg4Win v3.1.4 and GnuGP v2.2.10
 
 ## Usage
 
+### GpgEncrypt-Folder
+
+* Path: The path to the folder to encrypt files from .
+* Filter: A file system filter to apply when discovering files
+* ForUser: The identifier of the user for which the encryption will be performed. This is the recipient of the encrypted file.
+* OutputPath: The path to the destination of the encrypted files.
+* DonePath: The path to the location where files that have been worked will move to.
+
+```powershell
+GpgEncrypt-Folder -Path "filepath\to\file.ext" -Filter "*.ext" -ForUser "user@email.com" -OutputPath "filepath\to\encypted files" -DonePath "destination\of\worked\files"
+```
+
 ### GpgEncrypt-File
 
 * FilePath: The file system path to the file to be encrypted.
