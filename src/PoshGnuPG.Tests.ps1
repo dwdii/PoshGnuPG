@@ -21,6 +21,8 @@ Describe "GpgEncrypt-Folder" {
         $res = GpgEncrypt-Folder -Path $inputRoot -Filter "*.jpg" -ForUser "daniel@dittenhafer.net" -OutputPath $outputPath -DonePath $donePath -Verbose
         #$res | Select-Object -Index 0 | Write-Host
         #$res | Select-Object -Index 0 | Should Be "gpg (GnuPG) 2.2.10"
+
+        #$res | Out-String | Write-Host
         
         foreach($f in $res)
         {
