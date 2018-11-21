@@ -1,4 +1,11 @@
-﻿function Invoke-GpgExe
+﻿<#
+    PoshGnuGP
+    License:  Apache 2.0
+    Author:   Daniel Dittenhafer
+    URL:      https://github.com/dwdii/PoshGnuPG
+#>
+
+function Invoke-GpgExe
 {
     [CmdletBinding()]
     param
